@@ -13,8 +13,8 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: 'Open Disclosure California'
-email: caciviclab@googlegroups.com
+title: 'Open Disclosure Oakland'
+email: oaklandopendisclosure@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   We provide transparent, non-partisan campaign contribution and expenditure
   data in an accessible and easy to understand format. We hope this site will
@@ -23,7 +23,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   and ultimate citizen action.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.opendisclosure.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: caciviclab
+twitter_username: OpenDisclosureO
 github_username:  caciviclab
 future: true
 permalink: pretty
