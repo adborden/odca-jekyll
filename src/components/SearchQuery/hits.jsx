@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connectHits } from 'react-instantsearch-dom';
+import { connectHits, Highlight } from 'react-instantsearch-dom';
 
 const Hits = ({ hits }) => (
   <dl className="hit-list">
@@ -8,21 +8,22 @@ const Hits = ({ hits }) => (
       <div>
         {hit.last_name ?
           <dt>
-            <strong>Contributor:</strong> {hit.first_name} {hit.last_name}
+            <strong>Contributor: </strong>
+            <Highlight attribute="first_name" hit={hit} /> <Highlight attribute="last_name" hit={hit} />
           </dt>
           : ''
         }
         <dd>
           <strong>Election: </strong>
           <a href={`/election/${hit.election_location.toLowerCase()}/${hit.election_date}`} target="_blank" rel="noreferrer" >
-            {hit.election_title}
+            <Highlight attribute="election_title" hit={hit} />
           </a>
         </dd>
         {hit.committee_name ?
           <dd>
             <strong>Committee: </strong>
             <a href={`/committee/${hit.committee_id}`} target="_blank" rel="noreferrer" >
-              {hit.committee_name}
+              <Highlight attribute="committee_name" hit={hit} />
             </a>
           </dd>
           : ''
@@ -30,14 +31,14 @@ const Hits = ({ hits }) => (
         {hit.title ?
           <dd>
             {hit.supporting ?
-              <strong>{hit.supporting} </strong>
+              <strong><Highlight attribute="supporting" hit={hit} /> </strong>
               : ''
             }
-            {hit.measure ? <strong>{hit.measure} -  </strong>
+            {hit.measure ? <strong><Highlight attribute="measure" hit={hit} /> -  </strong>
               : <strong>Ballot Measure: </strong>
             }
             <a href={`/referendum/${hit.election_location.toLowerCase()}/${hit.election_date}/${hit.slug}`} target="_blank" rel="noreferrer" >
-              {hit.title}
+              <Highlight attribute="title" hit={hit} />
             </a>
           </dd>
           : ''
@@ -46,30 +47,30 @@ const Hits = ({ hits }) => (
           <dd>
             <strong>Office: </strong>
             <a href={`/office/${hit.election_location.toLowerCase()}/${hit.election_date}/${hit.office_slug}`} target="_blank" rel="noreferrer" >
-              {hit.office_title}
+              <Highlight attribute="office_title" hit={hit} />
             </a>
           </dd> : ''
         }
         {hit.name ?
           <dd>
             {hit.supporting ?
-              <strong>{hit.supporting} </strong>
+              <strong><Highlight attribute="supporting" hit={hit} /> </strong>
               : ''
             }
             <strong>Candidate: </strong>
             <a href={`/candidate/${hit.election_location.toLowerCase()}/${hit.election_date}/${hit.candidate_slug}`} target="_blank" rel="noreferrer" >
-              {hit.name}
+              <Highlight attribute="name" hit={hit} />
             </a>
           </dd>
           : ''
         }
         {hit.amount ?
           <dd>
-            <strong>Amount:</strong> ${hit.amount}
+            <strong>Amount:</strong> $<Highlight attribute="amount" hit={hit} />
           </dd>
           : ''}
-        <dd> <strong>Election date:</strong> {hit.election_date} </dd>
-        <dd> <strong>Location:</strong> {hit.election_location} </dd>
+        <dd> <strong>Election date:</strong> <Highlight attribute="election_date" hit={hit} /> </dd>
+        <dd> <strong>Location:</strong> <Highlight attribute="election_location" hit={hit} /> </dd>
         <hr />
       </div>
     ))}

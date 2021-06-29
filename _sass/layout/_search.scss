@@ -23,6 +23,14 @@
   font-size: $small-font-size;
 }
 
+.ais-Highlight-highlighted {
+  font-size: $small-font-size;
+}
+
+.ais-Highlight-nonHighlighted {
+  font-size: $small-font-size;
+}
+
 // NOTE: These `ais` classes override the default classes from Algolia Instant Search
 .ais-Pagination {
   margin-top: 2 * $spacing-base;
