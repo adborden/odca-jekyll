@@ -1,0 +1,106 @@
+bundle-cache-key: &bundle-cache-key
+  v1-bundle-{{ checksum "Gemfile.lock" }}
+
+npm-cache-key: &npm-cache-key
+  v1-npm-{{ checksum "package-lock.json" }}
+
+deploy-workflow-jobs: &deploy-workflow-jobs
+  - build:
+      filters:
+        branches:
+          ignore:
+            - gh-pages
+  - deploy:
+      requires:
+        - build
+      filters:
+        branches:
+          only: master
+
+
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7-node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - *bundle-cache-key
+      - run:
+          name: Configure Bundler # use bundler version in Gemfile.lock
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+      - run:
+          name: Bundle Install
+          command: bundle check || bundle install --path vendor/bundle
+      - save_cache:
+          key: *bundle-cache-key
+          paths:
+            - vendor/bundle
+      - restore_cache:
+          keys:
+            - *npm-cache-key
+      - run:
+          name: npm install
+          command: npm install
+      - save_cache:
+          key: *npm-cache-key
+          paths:
+            - node_modules
+      - run:
+          name: Clone finance data repo
+          command: git clone https://github.com/caciviclab/disclosure-backend-static.git
+          working_directory: ..
+      - run:
+          name: Clean data folder
+          command: make clean
+      - run:
+          name: Pull finance data
+          command: make pull-finance
+      - run:
+          name: Build production
+          command: make production
+      - run:
+          name: Test
+          command: make test
+      # Saves the build files so they can be recalled in other jobs
+      - persist_to_workspace:
+          root: .
+          paths:
+            - _site
+
+  deploy:
+    docker:
+      - image: circleci/ruby:2.7-node
+    environment:
+      GITHUB_REPO: caciviclab/odca-jekyll
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "84:e6:5d:fd:1d:8c:53:18:7e:0e:3e:ba:82:49:38:ca"
+      - attach_workspace:
+          at: .
+      - deploy:
+          name: Deploy to GH pages
+          command: _bin/deploy.sh
+
+
+workflows:
+  version: 2
+  commit:
+    jobs: *deploy-workflow-jobs
+
+  twice-daily:
+    triggers:
+      - schedule:
+          cron: "0 0,12 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs: *deploy-workflow-jobs

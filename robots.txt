@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /candidate/berkeley/
+Disallow: /candidate/sf/
+Disallow: /election/berkeley/
+Disallow: /election/sf/
+Disallow: /office/berkeley/
+Disallow: /office/sf/
+Disallow: /referendum/berkeley/
+Disallow: /referendum/sf/
+Disallow: /san-francisco/
